@@ -26,16 +26,24 @@ load_dotenv()
 
 APIFY_TOKEN = os.getenv("APIFY_TOKEN")
 APIFY_ACTOR_ID = os.getenv("APIFY_META_ADS_ACTOR", "automly/facebook-ad-library-scraper")
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "x-ai/grok-4.1-fast:free")
+# OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+# OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "x-ai/grok-4.1-fast:free")
+# DATA_DIR = Path(__file__).parent.parent / "data"
+
+#llm_client = OpenAI(
+#    base_url="https://openrouter.ai/api/v1",
+#    api_key=OPENROUTER_API_KEY,
+#)
+LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
+LLM_API_KEY = os.environ.get("LLM_API_KEY")
+LLM_MODEL = os.environ.get("LLM_MODEL", "z-ai/glm-5.2")
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 
 llm_client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=OPENROUTER_API_KEY,
+    base_url=LLM_BASE_URL,
+    api_key=LLM_API_KEY,
 )
-
 
 def scrape_meta_ads(search_terms: list[str], country: str = "US", max_items: int = 40) -> list[dict]:
     """Runs the Apify Meta Ad Library actor and returns raw ad records."""
@@ -101,7 +109,7 @@ Ad copy:
 \"\"\"{ad_text}\"\"\"
 """
     resp = llm_client.chat.completions.create(
-        model=OPENROUTER_MODEL,
+        model=LLM_MODEL,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3,
     )
@@ -119,7 +127,8 @@ def run(search_terms: list[str], top_n: int = 10) -> dict:
     top_ads = rank_ads(recent, top_n=top_n)
 
     enriched = []
-    for ad in top_ads:
+    for i, ad in enumerate(top_ads, 1):
+        print(f"[ads_manager] Analyzing ad {i}/{len(top_ads)}...")
         analysis = extract_pain_and_concept(ad)
         enriched.append({
             "ad_id": ad.get("id") or ad.get("adArchiveID"),

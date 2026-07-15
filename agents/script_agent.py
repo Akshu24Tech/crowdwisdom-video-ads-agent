@@ -23,24 +23,37 @@ from openai import OpenAI
 from dotenv import load_dotenv
 load_dotenv()
 
-OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
-OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "x-ai/grok-4.1-fast:free")
+# OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
+# OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "x-ai/grok-4.1-fast:free")
+# MAX_REVISION_LOOPS = 3
+
+# DATA_DIR = Path(__file__).parent.parent / "data"
+
+# llm_client = OpenAI(
+#     base_url="https://openrouter.ai/api/v1",
+#     api_key=OPENROUTER_API_KEY,
+# )
+
+
+LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
+LLM_API_KEY = os.environ.get("LLM_API_KEY")
+LLM_MODEL = os.environ.get("LLM_MODEL", "z-ai/glm-5.2")
 MAX_REVISION_LOOPS = 3
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 
 llm_client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=OPENROUTER_API_KEY,
+    base_url=LLM_BASE_URL,
+    api_key=LLM_API_KEY,
 )
 
 # Fill these in with real specifics pulled from CrowdWisdomTrading's data assets
 # (the two Drive docs linked in the brief - crowd sentiment aggregation stats,
 # number of sources tracked, historical accuracy figures, etc.)
 CWT_UNIQUE_DATA_POINTS = [
-    "Aggregates sentiment from 5,600+ traders across YouTube, X, and Discord",
-    "Weekly briefing consolidates hundreds of trader videos into one summary",
-    "Pro signals published every Monday before market open",
+    "Every ticker report synthesizes sentiment across YouTube, X, Reddit, and AI-processed sources into one weighted 'Wisdom of Professional Traders' read",
+    "Each call ships with a transparent confidence score (0-100) reflecting how unified trader sentiment actually is, not just a single analyst's opinion",
+    "Every setup includes two price targets and two stop levels with the technical method disclosed, so it's a structured trade plan, not just a directional guess",
 ]
 
 SCRIPT_TYPES = {
@@ -52,10 +65,13 @@ SCRIPT_TYPES = {
 
 def _call_llm(prompt: str) -> str:
     resp = llm_client.chat.completions.create(
-        model=OPENROUTER_MODEL,
+        model=LLM_MODEL,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.7,
     )
+    if not resp.choices:
+        error_detail = getattr(resp, "error", None) or getattr(resp, "model_dump", lambda: resp)()
+        raise RuntimeError(f"OpenRouter returned no choices. Full response: {error_detail}")
     return resp.choices[0].message.content.strip()
 
 
