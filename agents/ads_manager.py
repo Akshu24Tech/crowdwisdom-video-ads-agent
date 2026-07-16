@@ -36,7 +36,7 @@ APIFY_ACTOR_ID = os.getenv("APIFY_META_ADS_ACTOR", "automly/facebook-ad-library-
 #)
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
 LLM_API_KEY = os.environ.get("LLM_API_KEY")
-LLM_MODEL = os.environ.get("LLM_MODEL", "z-ai/glm-5.2")
+LLM_MODEL = os.environ.get("LLM_MODEL", "meta/llama-3.3-70b-instruct")
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 
