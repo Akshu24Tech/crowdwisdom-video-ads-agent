@@ -33,8 +33,13 @@ tool at all costs.
 import os
 import json
 import subprocess
+import platform
 from pathlib import Path
 from datetime import datetime
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 OUTPUTS_DIR = DATA_DIR / "outputs"
@@ -95,10 +100,11 @@ def render_with_remotion_fallback(brief_path: Path) -> dict:
 
     cmd = [
         "npx", "remotion", "render", "CWTAd", str(out_path),
-        "--props", json.dumps(brief),
+        f"--props={brief_path}",
     ]
     result = subprocess.run(
-        cmd, cwd=REMOTION_PROJECT_PATH, capture_output=True, text=True, timeout=1800
+        cmd, cwd=REMOTION_PROJECT_PATH, capture_output=True, text=True, timeout=1800,
+        shell=(platform.system() == "Windows"),
     )
     if result.returncode != 0:
         raise RuntimeError(f"Remotion render failed: {result.stderr[-2000:]}")
