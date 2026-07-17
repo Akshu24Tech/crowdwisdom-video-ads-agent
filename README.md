@@ -35,11 +35,11 @@ mcp_server.py               # exposes the 4 pipeline operations as MCP tools for
 agents/
   ads_manager.py             # Apify scrape + ranking + pain/concept extraction
   script_agent.py             # 3 script types + hook + groundedness validator
-  video_agent.py               # Remotion render (see video-render/)
+  video_agent.py               # Remotion render (see cwt-video-render/)
 kanban/board.py                # SQLite-backed kanban board
 skills/crowdwisdom_ad_pipeline.skill.md  # Hermes skill: drives the tool-call loop
 telegram_bot.py                 # standalone Telegram fallback (if not using Hermes gateway)
-video-render/                    # Remotion project - separate Node/React app that
+cwt-video-render/                # Remotion project - separate Node/React app that
                                    # renders the actual video (see below)
 data/                             # scraped_ads.json, scripts.json, video_outputs.json
 ```
@@ -124,14 +124,14 @@ OpenMontage code path (`render_with_openmontage`) that's tried first and
 falls through to Remotion if `OPENMONTAGE_REPO_PATH` isn't set, so switching
 back is a one-line env change if you want to pursue that integration further.
 
-Setup (already done in `video-render/`, included in this repo):
+Setup (already done in `cwt-video-render/`, included in this repo):
 ```bash
-cd video-render
+cd cwt-video-render
 npm install
 npm run dev              # opens Remotion Studio in the browser to preview
 ```
 
-The composition (`video-render/src/CWTAd.tsx`) takes `hook`, `script`,
+The composition (`cwt-video-render/src/CWTAd.tsx`) takes `hook`, `script`,
 `brand`, and `cta` as props and renders a 3-phase 1080x1920 (vertical) video:
 hook fades in (0-3s) -> script reveals word-by-word -> CTA fades in for the
 last 5s. `video_agent.py` writes each ad's brief to a JSON file and passes it
@@ -139,14 +139,14 @@ via `npx remotion render CWTAd <output> --props=<brief.json>`.
 
 Set in `.env`:
 ```dotenv
-REMOTION_PROJECT_PATH=<absolute path to>\crowdwisdom-video-ads-agent\video-render
+REMOTION_PROJECT_PATH=<absolute path to>\crowdwisdom-video-ads-agent\cwt-video-render
 ```
 
 Windows note: `npx` resolves to `npx.cmd` on Windows, which Python's
 `subprocess.run()` can't launch directly without `shell=True` - already
 handled in `video_agent.py` (auto-detects Windows via `platform.system()`).
 
-`video-render/node_modules/` is gitignored - don't commit it.
+`cwt-video-render/node_modules/` is gitignored - don't commit it.
 
 ## Wiring into Hermes (MCP + skill + Telegram)
 

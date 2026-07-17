@@ -1,0 +1,71 @@
+[
+  {
+    "source_ad_id": "2381278912363488",
+    "pain_point": "Uncertainty about falling fertilizer prices and its impact on production costs and profitability for producers",
+    "concept": "Providing real-time, actionable market commentary and signals to help producers navigate volatile fertilizer prices and optimize marketing strategy",
+    "hook": "User Safety: safe",
+    "scripts": [
+      {
+        "script_type": "pain_led",
+        "script": "Falling fertilizer prices leaving you guessing what it means for your costs and profits? You're not alone. Most traders watch the market, but they miss the collective intelligence of thousands acting in real-time. CrowdWisdomTrading aggregates sentiment from YouTube, X, and Discord into one weighted professional trader read. Every signal includes a confidence score and clear price targets with stops\u2014no guesswork. Stop flying blind. Navigate volatility with clarity. CrowdWisdomTrading.com.",
+        "revision_loops": 1
+      },
+      {
+        "script_type": "unique_data_led",
+        "script": "Did you know CrowdWisdomTrading pulls trader sentiment from YouTube, X, Reddit, and AI sources into one weighted read? That's how we spotted falling fertilizer prices before most producers did. Every signal ships with a confidence score from zero to one hundred, so you know how unified the crowd really is. Each setup gives two price targets and two stops, with the method shown. Stop guessing on input costs. Get weekly briefings at crowdwisdomtrading.com and market with clarity.",
+        "revision_loops": 1
+      },
+      {
+        "script_type": "cwt_benefit_led",
+        "script": "Remember when fertilizer prices had you guessing and hoping your margins would survive? Now picture trading with CrowdWisdomTrading. Every week we pull sentiment from thousands of traders on YouTube, X, and Discord into one clear read. Each call ships with a confidence score from zero to one hundred, so you know how unified the crowd really is. Every setup gives two price targets and two stops, with the technical method shown. No more guessing alone\u2014just structured plans from the wisdom of professional traders.",
+        "revision_loops": 1
+      }
+    ]
+  },
+  {
+    "source_ad_id": "2366242800568506",
+    "pain_point": "fear of lost revenue and frustration over declining sales",
+    "concept": "a program or solution that helps businesses recover lost sales",
+    "hook": "Your sales are bleeding\u2014here\u2019s how to stop the loss today.",
+    "scripts": [
+      {
+        "script_type": "pain_led",
+        "script": "Feeling the sting of lost revenue and watching sales slip away? You\u2019re not alone. CrowdWisdomTrading gathers insights from professional traders across YouTube, X, Reddit and Discord, turning that chatter into a single 'Wisdom of Professional Traders' read. Every ticker includes sentiment, a confidence score (0\u2011100), two price targets, two stop levels and the exact technical method\u2014so you have a complete trade plan, not just a guess. Recover lost sales with smarter moves.",
+        "revision_loops": 2
+      },
+      {
+        "script_type": "unique_data_led",
+        "script": "Did you know every ticker report on CrowdWisdomTrading pulls sentiment from thousands of traders on YouTube, X, Reddit, and AI\u2011processed sources into one weighted 'Wisdom of Professional Traders'? That means you get a single, clear view of market mood, plus a confidence score from 0\u2011100 telling you how unified traders really feel. Each call also gives two price targets and stop levels, so you never guess again. Stop losing revenue\u2014turn market chatter into winning trades.",
+        "revision_loops": 1
+      },
+      {
+        "script_type": "cwt_benefit_led",
+        "script": "Tired of watching sales slip and revenue vanish while you guess alone? Every missed trade hurts. CrowdWisdomTrading ends that frustration. Our ticker reports pull sentiment from thousands of traders on YouTube, X, and Discord into one weighted read, with a transparent confidence score from zero to one hundred. Each setup ships two price targets and two stops, method disclosed, a structured plan that protects revenue. Stop losing money to chance. Visit crowdwisdomtrading.com.",
+        "revision_loops": 2
+      }
+    ]
+  },
+  {
+    "source_ad_id": "830431836597751",
+    "pain_point": "Time-consuming manual trading and emotional decision-making in stock market analysis",
+    "concept": "Automated algorithmic trading software that identifies low-risk stock opportunities and delivers them via text alerts",
+    "hook": "Stop guessing stocks\u2014get low-risk picks texted to you automatically.",
+    "scripts": [
+      {
+        "script_type": "pain_led",
+        "script": "Tired of spending hours scrolling YouTube, X, and Discord just to make emotional, half-guessed trades? We get it\u2014manual analysis burns you out and wrecks your decisions. CrowdWisdomTrading fixes that. We aggregate sentiment from thousands of traders across YouTube, X, and Discord into weekly briefings and signals. Every ticker report synthesizes sentiment across YouTube, X, Reddit, and AI-processed sources into one weighted Wisdom of Professional Traders read. Each call ships with a transparent confidence score from 0 to 100, plus two price targets and two stop levels with the method disclosed. Trade with structure, not stress.",
+        "revision_loops": 1
+      },
+      {
+        "script_type": "unique_data_led",
+        "script": "Did you know CrowdWisdomTrading pulls trading sentiment from thousands of traders on YouTube, X, and Discord every single week? Instead of staring at charts and making emotional calls, you get one weighted 'Wisdom of Professional Traders' read per ticker. Each alert ships with a transparent 0 to 100 confidence score and a full trade plan: two price targets, two stops, and the technical method shown. No manual grind, no guesswork. Get weekly briefings and signals at crowdwisdomtrading.com.",
+        "revision_loops": 1
+      },
+      {
+        "script_type": "cwt_benefit_led",
+        "script": "Imagine trading without guessing alone or drowning in charts after work. With CrowdWisdomTrading, you get weekly briefings that pull sentiment from thousands of traders on YouTube, X, and Discord. Every ticker report blends those voices into one weighted Wisdom of Professional Traders read. Each call ships with a transparent 0\u2013100 confidence score, plus two price targets and two stop levels with the method disclosed. No more emotional, manual scrambling. Just clear, structured trade plans delivered to you, so you trade with the crowd's clarity, not your own doubt.",
+        "revision_loops": 1
+      }
+    ]
+  }
+]

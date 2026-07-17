@@ -26,4 +26,11 @@ data/outputs/*
 .DS_Store
 Thumbs.db
 
+# Remotion project - deps and test renders
 cwt-video-render/node_modules/
+cwt-video-render/out/
+
+# Local dev scratch
+inspect_fields.py
+kanban/kanban.db
+assignment.txt
