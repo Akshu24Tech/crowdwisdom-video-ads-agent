@@ -25,3 +25,5 @@ data/outputs/*
 .idea/
 .DS_Store
 Thumbs.db
+
+cwt-video-render/node_modules/
