@@ -19,25 +19,14 @@ import os
 import json
 from pathlib import Path
 
-from openai import OpenAI
 from dotenv import load_dotenv
+from openai import OpenAI
+
 load_dotenv()
-
-# OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
-# OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "x-ai/grok-4.1-fast:free")
-# MAX_REVISION_LOOPS = 3
-
-# DATA_DIR = Path(__file__).parent.parent / "data"
-
-# llm_client = OpenAI(
-#     base_url="https://openrouter.ai/api/v1",
-#     api_key=OPENROUTER_API_KEY,
-# )
-
 
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
 LLM_API_KEY = os.environ.get("LLM_API_KEY")
-LLM_MODEL = os.environ.get("LLM_MODEL", "z-ai/glm-5.2")
+LLM_MODEL = os.environ.get("LLM_MODEL", "meta/llama-3.3-70b-instruct")
 MAX_REVISION_LOOPS = 3
 
 DATA_DIR = Path(__file__).parent.parent / "data"
@@ -47,9 +36,10 @@ llm_client = OpenAI(
     api_key=LLM_API_KEY,
 )
 
-# Fill these in with real specifics pulled from CrowdWisdomTrading's data assets
-# (the two Drive docs linked in the brief - crowd sentiment aggregation stats,
-# number of sources tracked, historical accuracy figures, etc.)
+# Real data points drawn from actual CrowdWisdomTrading sample outputs
+# (^NDX_2026-04-27.json, SNOW_2026-04-27.json) - structural facts about the
+# product, not invented stats. Do not add numbers that aren't evidenced by
+# an actual sample output.
 CWT_UNIQUE_DATA_POINTS = [
     "Every ticker report synthesizes sentiment across YouTube, X, Reddit, and AI-processed sources into one weighted 'Wisdom of Professional Traders' read",
     "Each call ships with a transparent confidence score (0-100) reflecting how unified trader sentiment actually is, not just a single analyst's opinion",
@@ -63,16 +53,35 @@ SCRIPT_TYPES = {
 }
 
 
-def _call_llm(prompt: str) -> str:
-    resp = llm_client.chat.completions.create(
-        model=LLM_MODEL,
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.7,
-    )
-    if not resp.choices:
-        error_detail = getattr(resp, "error", None) or getattr(resp, "model_dump", lambda: resp)()
-        raise RuntimeError(f"OpenRouter returned no choices. Full response: {error_detail}")
-    return resp.choices[0].message.content.strip()
+import time as _time
+
+
+def _call_llm(prompt: str, max_retries: int = 5) -> str:
+    last_err = None
+    for attempt in range(max_retries):
+        wait = 2 ** (attempt + 1)  # default backoff: 2s, 4s, 8s, 16s
+        try:
+            resp = llm_client.chat.completions.create(
+                model=LLM_MODEL,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7,
+                timeout=60,
+            )
+            if resp.choices:
+                return resp.choices[0].message.content.strip()
+            error_detail = getattr(resp, "error", None) or getattr(resp, "model_dump", lambda: resp)()
+            last_err = str(error_detail)
+        except Exception as e:
+            last_err = str(e)
+
+        # Rate-limit errors need a real cooldown, not a quick 2-8s retry
+        if "rate" in last_err.lower() or "429" in last_err or "ResourceExhausted" in last_err:
+            wait = 35
+
+        if attempt < max_retries - 1:
+            print(f"[script_agent] LLM call failed (attempt {attempt+1}/{max_retries}), retrying in {wait}s: {last_err}")
+            _time.sleep(wait)
+    raise RuntimeError(f"LLM call failed after {max_retries} attempts: {last_err}")
 
 
 def generate_hook(pain_point: str, concept: str) -> str:
@@ -125,12 +134,22 @@ Answer with JSON only: {{"grounded": true/false, "feedback": "one sentence, only
 
 def generate_grounded_script(script_type: str, pain_point: str, concept: str) -> dict:
     script = generate_script(script_type, pain_point, concept)
+    attempt = 0
     for attempt in range(MAX_REVISION_LOOPS):
         grounded, feedback = _validate_grounded(script, pain_point)
         if grounded:
             break
         script = _call_llm(
-            f"Revise this script to fix the issue: {feedback}\n\nScript:\n{script}"
+            f"""Revise this ad script to fix the following issue: {feedback}
+
+Original script:
+\"\"\"{script}\"\"\"
+
+Rules:
+- Output ONLY the revised script text, nothing else
+- No explanations, no "Key Fixes" notes, no headers, no meta-commentary
+- Keep it 60-90 words, plain spoken narration for a video ad
+- Do not change topic - it must still be a CrowdWisdomTrading ad script"""
         )
     return {"script_type": script_type, "script": script, "revision_loops": attempt + 1}
 
